@@ -1,20 +1,27 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
-const AuthContext = createContext();
+export const AuthContext = createContext({});
 
 export const AuthProvider = ({ children }) => {
-  const [isAuth, setIsAuth] = useState(false);
+  const [userAuth, setUserAuth] = useState(() => {
+    const savedAuth = localStorage.getItem('userAuth');
+    return savedAuth ? JSON.parse(savedAuth) : { userMail: "", isAuth: false };
+  });
 
-  const login = () => {
-    setIsAuth(true);
+  useEffect(() => {
+    localStorage.setItem('userAuth', JSON.stringify(userAuth));
+  }, [userAuth]);
+
+  const login = (user) => {
+    setUserAuth({userMail: user,isAuth: true});
   };
 
   const logout = () => {
-    setIsAuth(false);
+    setUserAuth({userMail: "",isAuth: false});
   };
 
   return (
-    <AuthContext.Provider value={{ isAuth, login, logout }}>
+    <AuthContext.Provider value={{ userAuth, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
@@ -22,4 +29,4 @@ export const AuthProvider = ({ children }) => {
 
 export const useAuth = () => {
   return useContext(AuthContext);
-};
+}

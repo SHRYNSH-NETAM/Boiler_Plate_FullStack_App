@@ -3,13 +3,13 @@ import { useAuth } from './AuthContext';
 import { useEffect } from 'react';
 
 const ProtectedRoute = ({ children }) => {
-  const { isAuth } = useAuth();
+  const { userAuth } = useAuth();
 
   const Navigate = useNavigate();
 
   useEffect(() => {
-    if(!isAuth) Navigate('/login',{replace: true});
-  },[isAuth,Navigate]);
+    if(!userAuth.isAuth) Navigate('/login',{replace: true});
+  },[userAuth,Navigate]);
 
   return children;
 };

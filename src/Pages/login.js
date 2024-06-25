@@ -26,8 +26,25 @@ function Login(){
             /^[a-zA-Z0-9_.±]+@[a-zA-Z0-9-]+.[a-zA-Z0-9-.]+$/
           );
     };
+
+    async function getData(url = "", data = {}) {
+      const response = await fetch(url, {
+        method: "POST",
+        mode: "cors", 
+        cache: "no-cache", 
+        credentials: "same-origin", 
+        headers: {
+          "Content-Type": "application/json",
+        },
+        redirect: "follow", 
+        referrerPolicy: "no-referrer", 
+        body: JSON.stringify(data), 
+      });
+      const result = await response.json();
+      return {status: response.status, body: result};
+    }
     
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
   
         let valid = true;
@@ -36,14 +53,28 @@ function Login(){
           setEvalid(true);
           valid=false;
         } else {
-            setEvalid(false);
+          setEvalid(false);
         }
-  
+
+        try{
+          const retrievedvalue = await getData("http://127.0.0.1:8000/login", user);
+          console.log(retrievedvalue.body)
+    
+          if(retrievedvalue.status!==200){
+            alert("User does not Exist for this Credentials!")
+            return
+          }
+          login(retrievedvalue.body.email);
+
+        }catch(err){
+          console.error('Error:', err);
+          valid = false;
+        }
+
         if(valid){
           if(remember) localStorage.setItem("User",JSON.stringify(user));
           console.log(user);
           setUser({Name:"",Email:"",Pass:"",Cpass:""});
-          login();
           Navigate("/");
         }
     }

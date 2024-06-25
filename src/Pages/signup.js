@@ -1,13 +1,18 @@
 import { Center,Heading,Input,Link,Button,Text,HStack,Checkbox,Flex,
   FormControl,FormLabel,FormErrorMessage} from '@chakra-ui/react'
-import { useState } from 'react';
+import { useState,useContext } from 'react';
 import { useNavigate  } from "react-router-dom";
+import { AuthContext } from '../Utils/AuthContext';
 
 function Signup() {
+  const { isAuth,userEmail } = useContext(AuthContext);
   const [user,setUser] = useState({Name:"Shreyansh Netam",Email:"netams2000@gmail.com",Pass:"Temp@2000",Cpass:"Temp@2000"});
   const [error,setError] = useState({email:"",pass:"",checkpass:""});
   const [acceptTerms, setAcceptTerms] = useState(false);
   const Navigate = useNavigate();
+
+  console.log(isAuth)
+  console.log(userEmail)
 
   const handleChange = (e) => {
     const { name, value } = e.target;
