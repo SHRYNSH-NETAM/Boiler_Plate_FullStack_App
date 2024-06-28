@@ -1,14 +1,19 @@
 import { Center,Heading,Input,Link,Button,Text,HStack,Flex,Checkbox,Spacer,
     FormControl,FormLabel,FormErrorMessage} from '@chakra-ui/react'
 import { useState } from 'react';
-import { useNavigate  } from "react-router-dom";
+import { useNavigate, useLocation  } from "react-router-dom";
 import { useAuth } from '../Utils/AuthContext';
 
 function Login(){
-    const [user,setUser] = useState({Email:"netams2000@gmail.com",Pass:"Temp@2000"});
+    const [user, setUser] = useState(() => {
+      const savedData = localStorage.getItem('User');
+      return savedData ? JSON.parse(savedData) : {Email:"",Pass:""};
+    });
+    // {Email:"netams2000@gmail.com",Pass:"Temp@2000"}
     const [evalid,setEvalid] = useState(false);
     const [remember, setRemember] = useState(false);
     const Navigate = useNavigate();
+    const Location = useLocation();
     const { login } = useAuth();
 
     const handleChange = (e) => {
@@ -58,9 +63,12 @@ function Login(){
 
         try{
           const retrievedvalue = await getData("http://127.0.0.1:8000/login", user);
-          console.log(retrievedvalue.body)
     
-          if(retrievedvalue.status!==200){
+          if(retrievedvalue.status===206){
+            alert("Please Enter the correct Password!")
+            return
+          }
+          else if(retrievedvalue.status===404){
             alert("User does not Exist for this Credentials!")
             return
           }
@@ -73,9 +81,10 @@ function Login(){
 
         if(valid){
           if(remember) localStorage.setItem("User",JSON.stringify(user));
-          console.log(user);
           setUser({Name:"",Email:"",Pass:"",Cpass:""});
-          Navigate("/");
+          const from = Location.state?.from?.pathname || "/";
+          // if(from==="/signup" || from==="/forget") from = "/";
+          Navigate(from);;
         }
     }
   return (

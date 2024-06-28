@@ -17,7 +17,24 @@ function Forgetpass() {
       );
   };
 
-  const handleSubmit = (e) => {
+  async function getData(url = "", data = {}) {
+    const response = await fetch(url, {
+      method: "POST",
+      mode: "cors", 
+      cache: "no-cache", 
+      credentials: "same-origin", 
+      headers: {
+        "Content-Type": "application/json",
+      },
+      redirect: "follow", 
+      referrerPolicy: "no-referrer", 
+      body: JSON.stringify(data), 
+    });
+    const result = await response.json();
+    return {status: response.status, body: result};
+  }
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     let valid = true;
@@ -29,9 +46,23 @@ function Forgetpass() {
       setEvalid(false);
     }
 
+    try{
+      const retrievedvalue = await getData("http://127.0.0.1:8000/forget", {Email: email});
+
+      if(retrievedvalue.status===404){
+        alert("User does not Exist for this Credentials!")
+        return
+      }
+      alert(`Password for this Email is ${retrievedvalue.body.pass}`)
+
+    }catch(err){
+      console.error('Error:', err);
+      valid = false;
+    }
+
     if(valid){
-      console.log(email);
       setEmail("");
+      Navigate("/login")
     }
 }
 

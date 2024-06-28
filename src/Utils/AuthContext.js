@@ -18,6 +18,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = () => {
     setUserAuth({userMail: "",isAuth: false});
+    localStorage.removeItem('userAuth');
   };
 
   return (
