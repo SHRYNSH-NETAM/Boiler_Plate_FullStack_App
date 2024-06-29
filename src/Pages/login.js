@@ -72,7 +72,7 @@ function Login(){
             alert("User does not Exist for this Credentials!")
             return
           }
-          login(retrievedvalue.body.email);
+          login(retrievedvalue.body.email,(retrievedvalue.body.token));
 
         }catch(err){
           console.error('Error:', err);

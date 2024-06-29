@@ -5,19 +5,19 @@ export const AuthContext = createContext({});
 export const AuthProvider = ({ children }) => {
   const [userAuth, setUserAuth] = useState(() => {
     const savedAuth = localStorage.getItem('userAuth');
-    return savedAuth ? JSON.parse(savedAuth) : { userMail: "", isAuth: false };
+    return savedAuth ? JSON.parse(savedAuth) : { userMail: "", isAuth: false , usertoken: ""};
   });
 
   useEffect(() => {
     localStorage.setItem('userAuth', JSON.stringify(userAuth));
   }, [userAuth]);
 
-  const login = (user) => {
-    setUserAuth({userMail: user,isAuth: true});
+  const login = (user,token) => {
+    setUserAuth({userMail: user, isAuth: true, usertoken: token});
   };
 
   const logout = () => {
-    setUserAuth({userMail: "",isAuth: false});
+    setUserAuth({userMail: "",isAuth: false, usertoken: ""});
     localStorage.removeItem('userAuth');
   };
 

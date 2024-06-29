@@ -8,7 +8,7 @@ function Home() {
   const [userName,setUserName] = useState("");
   const Navigate = useNavigate();
 
-  async function getData(url = "", data = {}) {
+  async function getData(url = "", data = {}, token) {
     const response = await fetch(url, {
       method: "POST",
       mode: "cors", 
@@ -16,6 +16,7 @@ function Home() {
       credentials: "same-origin", 
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`,
       },
       redirect: "follow", 
       referrerPolicy: "no-referrer", 
@@ -29,7 +30,7 @@ function Home() {
     async function fetchUserData() {
       if (userAuth.userMail && userAuth.isAuth) {
         try {
-          const retrievedValue = await getData("http://127.0.0.1:8000/", { email: userAuth.userMail });
+          const retrievedValue = await getData("http://127.0.0.1:8000/", { email: userAuth.userMail }, userAuth.usertoken);
           if (retrievedValue.status !== 200) {
             alert("User does not exist for these credentials!");
             return;
